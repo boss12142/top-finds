@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
                 'User-Agent': 'Mozilla/5.0 (compatible; TopFindsBot/1.0)',
                 'Accept': 'image/webp,image/avif,image/*,*/*',
             },
-            next: { revalidate: 86400 }, // Cache for 24 hours
+            cache: 'no-store', // Prevent Next.js from aggressively deduplicating/caching images
         });
 
         if (!res.ok) {
