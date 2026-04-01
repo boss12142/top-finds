@@ -1,6 +1,7 @@
-import { getProducts, getCategories } from "@/lib/products";
+import { getProducts, getCategories, getProductsByCategory } from "@/lib/products";
 import ProductCard from "@/components/ProductCard";
 import { Product } from "@/lib/types";
+import Link from "next/link";
 
 const CATEGORY_EMOJI: Record<string, string> = {
   electronics: "⚡",
@@ -14,16 +15,26 @@ const CATEGORY_EMOJI: Record<string, string> = {
   pet: "🐾",
   baby: "👶",
   clothing: "👕",
+  "tech accessories": "💻",
+  gadgets: "🎮",
   all: "🔥",
 };
 
 export const revalidate = 60; // ISR: revalidate every 60 seconds
 
-export default async function HomePage() {
-  const data = await getProducts();
+export default async function HomePage({ searchParams }: { searchParams: { cat?: string } }) {
+  const currentCategory = searchParams.cat?.toLowerCase() || 'all';
   const categories = await getCategories();
-  const products = data.products;
-  const featured = products.slice(0, 6);
+
+  let products = [];
+  if (currentCategory === 'all') {
+    const data = await getProducts();
+    products = data.products;
+  } else {
+    products = await getProductsByCategory(currentCategory);
+  }
+
+  const featured = products.slice(0, 10); // Show up to 10 products per category view
 
   return (
     <>
@@ -42,13 +53,13 @@ export default async function HomePage() {
       {/* Categories */}
       <section style={{ paddingBottom: 20 }}>
         <div className="category-pills">
-          <span className="category-pill active">
+          <Link href="/?cat=all" className={`category-pill ${currentCategory === 'all' ? 'active' : ''}`}>
             {CATEGORY_EMOJI.all} All
-          </span>
+          </Link>
           {categories.map((cat) => (
-            <span key={cat} className="category-pill">
+            <Link key={cat} href={`/?cat=${cat}`} className={`category-pill ${currentCategory === cat.toLowerCase() ? 'active' : ''}`}>
               {CATEGORY_EMOJI[cat.toLowerCase()] || "📦"} {cat.charAt(0).toUpperCase() + cat.slice(1)}
-            </span>
+            </Link>
           ))}
         </div>
       </section>
@@ -56,8 +67,9 @@ export default async function HomePage() {
       {/* Product Grid */}
       <section id="products" style={{ paddingBottom: 60 }}>
         <div className="section-title">
-          <h2>🏆 Trending Right Now</h2>
-          <p>Handpicked products trending on Amazon</p>
+          <h2>{currentCategory === 'all' ? '🏆 Trending Right Now' : `📦 Top Picks: ${currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1)}`}</h2>
+          <p>Handpicked products {currentCategory === 'all' ? 'trending on Amazon' : `in ${currentCategory}`}</p>
+
         </div>
 
         {featured.length > 0 ? (
