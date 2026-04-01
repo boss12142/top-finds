@@ -32,7 +32,7 @@ export default function ProductCard({ product, index }: { product: Product; inde
                     {product.rank && <span className="product-card-rank">#{product.rank}</span>}
                     {product.image ? (
                         <img
-                            src={`/api/image-proxy?url=${encodeURIComponent(product.image)}`}
+                            src={`/api/image-proxy?url=${encodeURIComponent(product.image)}&t=${product.added_at ? new Date(product.added_at).getTime() : Date.now()}`}
                             alt={product.title}
                             loading="lazy"
                             onError={(e) => {
