@@ -31,7 +31,18 @@ export default function ProductCard({ product, index }: { product: Product; inde
                 <div className="product-card-image">
                     {product.rank && <span className="product-card-rank">#{product.rank}</span>}
                     {product.image ? (
-                        <img src={product.image} alt={product.title} loading="lazy" />
+                        <img
+                            src={`/api/image-proxy?url=${encodeURIComponent(product.image)}`}
+                            alt={product.title}
+                            loading="lazy"
+                            onError={(e) => {
+                                // Fallback to direct URL if proxy fails
+                                const target = e.target as HTMLImageElement;
+                                if (!target.src.includes('direct')) {
+                                    target.src = product.image + '?direct=1';
+                                }
+                            }}
+                        />
                     ) : (
                         <span style={{ fontSize: 48, opacity: 0.3 }}>📦</span>
                     )}
