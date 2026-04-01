@@ -5,14 +5,18 @@ export async function getProducts(): Promise<ProductsData> {
     const { data, error } = await supabase
         .from('products')
         .select('*')
-        .order('rank', { ascending: true });
+        .order('added_at', { ascending: false })
+        .limit(6);
 
     if (error || !data) {
         return { products: [], last_updated: new Date().toISOString(), featured_category: 'electronics' };
     }
 
+    // Sort the most recent products by their rank so they display in the correct order
+    const sortedProducts = (data as Product[]).sort((a, b) => (a.rank || 99) - (b.rank || 99));
+
     return {
-        products: data as Product[],
+        products: sortedProducts,
         last_updated: new Date().toISOString(),
         featured_category: 'electronics',
     };
@@ -28,9 +32,10 @@ export async function getProductsByCategory(category: string): Promise<Product[]
         .from('products')
         .select('*')
         .ilike('category', category)
-        .order('rank', { ascending: true });
+        .order('added_at', { ascending: false })
+        .limit(6);
 
-    return error ? [] : (data as Product[]);
+    return error ? [] : (data as Product[]).sort((a, b) => (a.rank || 99) - (b.rank || 99));
 }
 
 export async function getLatestProducts(limit: number = 10): Promise<Product[]> {
