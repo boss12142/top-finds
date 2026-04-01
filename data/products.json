@@ -1,0 +1,90 @@
+{
+    "products": [
+        {
+            "asin": "B09B8V1LZ3",
+            "title": "Echo Dot (5th Gen) - Smart Speaker with Alexa",
+            "price": 27.99,
+            "price_display": "$27.99",
+            "rating": 4.7,
+            "num_reviews": 384521,
+            "image": "https://m.media-amazon.com/images/I/518cRYanpbL._AC_SL1000_.jpg",
+            "affiliate_link": "https://www.amazon.com/dp/B09B8V1LZ3?tag=bluediamon09a-20",
+            "category": "electronics",
+            "rank": 1,
+            "added_at": "2026-03-31T00:00:00Z",
+            "description": "The most popular smart speaker with Alexa. Improved audio for richer sound. Control smart home devices hands-free."
+        },
+        {
+            "asin": "B0BSHF7WHW",
+            "title": "JBL Tune 230NC TWS - Wireless Noise Cancelling Earbuds",
+            "price": 49.95,
+            "price_display": "$49.95",
+            "rating": 4.5,
+            "num_reviews": 28431,
+            "image": "https://m.media-amazon.com/images/I/61Ij0MirlBL._AC_SL1500_.jpg",
+            "affiliate_link": "https://www.amazon.com/dp/B0BSHF7WHW?tag=bluediamon09a-20",
+            "category": "electronics",
+            "rank": 2,
+            "added_at": "2026-03-31T00:00:00Z",
+            "description": "True wireless earbuds with Active Noise Cancelling and JBL Pure Bass Sound."
+        },
+        {
+            "asin": "B0C5KNH2KG",
+            "title": "Stanley Quencher H2.0 FlowState Tumbler 40 oz",
+            "price": 35.00,
+            "price_display": "$35.00",
+            "rating": 4.6,
+            "num_reviews": 96234,
+            "image": "https://m.media-amazon.com/images/I/71GOLS9pJEL._AC_SL1500_.jpg",
+            "affiliate_link": "https://www.amazon.com/dp/B0C5KNH2KG?tag=bluediamon09a-20",
+            "category": "home",
+            "rank": 3,
+            "added_at": "2026-03-31T00:00:00Z",
+            "description": "The viral Stanley tumbler everyone's talking about. Keeps drinks cold for 11 hours."
+        },
+        {
+            "asin": "B0CXKYTPFC",
+            "title": "Ring Indoor Cam (2nd Gen) - 1080p HD Security Camera",
+            "price": 29.99,
+            "price_display": "$29.99",
+            "rating": 4.4,
+            "num_reviews": 15623,
+            "image": "https://m.media-amazon.com/images/I/51TjJOTfslL._AC_SL1000_.jpg",
+            "affiliate_link": "https://www.amazon.com/dp/B0CXKYTPFC?tag=bluediamon09a-20",
+            "category": "electronics",
+            "rank": 4,
+            "added_at": "2026-03-31T00:00:00Z",
+            "description": "Compact indoor security camera with HD video and two-way talk."
+        },
+        {
+            "asin": "B0BT2BG7MY",
+            "title": "Apple AirTag 4 Pack - Find My Network Tracker",
+            "price": 79.99,
+            "price_display": "$79.99",
+            "rating": 4.7,
+            "num_reviews": 204532,
+            "image": "https://m.media-amazon.com/images/I/71gY9E+cTaS._AC_SL1500_.jpg",
+            "affiliate_link": "https://www.amazon.com/dp/B0BT2BG7MY?tag=bluediamon09a-20",
+            "category": "electronics",
+            "rank": 5,
+            "added_at": "2026-03-31T00:00:00Z",
+            "description": "Track your everyday items with Apple's Find My network."
+        },
+        {
+            "asin": "B09JQMJHXY",
+            "title": "Govee Smart LED Strip Lights 65.6ft - WiFi RGB",
+            "price": 19.99,
+            "price_display": "$19.99",
+            "rating": 4.5,
+            "num_reviews": 67890,
+            "image": "https://m.media-amazon.com/images/I/71BAss6WJAL._AC_SL1500_.jpg",
+            "affiliate_link": "https://www.amazon.com/dp/B09JQMJHXY?tag=bluediamon09a-20",
+            "category": "home",
+            "rank": 6,
+            "added_at": "2026-03-31T00:00:00Z",
+            "description": "Smart LED strip lights with app control, music sync and 16 million colors."
+        }
+    ],
+    "last_updated": "2026-03-31T00:00:00Z",
+    "featured_category": "electronics"
+}
