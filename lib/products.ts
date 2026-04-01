@@ -1,79 +1,70 @@
+import { supabase } from './supabase';
 import { Product, ProductsData } from './types';
-import fs from 'fs';
-import path from 'path';
 
-const DATA_FILE = path.join(process.cwd(), 'data', 'products.json');
+export async function getProducts(): Promise<ProductsData> {
+    const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('rank', { ascending: true });
 
-function getDefaultData(): ProductsData {
+    if (error || !data) {
+        return { products: [], last_updated: new Date().toISOString(), featured_category: 'electronics' };
+    }
+
     return {
-        products: [],
+        products: data as Product[],
         last_updated: new Date().toISOString(),
-        featured_category: "electronics",
+        featured_category: 'electronics',
     };
 }
 
-export function getProducts(): ProductsData {
-    try {
-        if (!fs.existsSync(DATA_FILE)) {
-            return getDefaultData();
-        }
-        const raw = fs.readFileSync(DATA_FILE, 'utf-8');
-        return JSON.parse(raw) as ProductsData;
-    } catch {
-        return getDefaultData();
-    }
-}
-
-export function getProductsByCategory(category: string): Product[] {
-    const data = getProducts();
-    if (!category || category === 'all') return data.products;
-    return data.products.filter(p => p.category.toLowerCase() === category.toLowerCase());
-}
-
-export function getLatestProducts(limit: number = 10): Product[] {
-    const data = getProducts();
-    return [...data.products]
-        .sort((a, b) => {
-            const dateA = a.added_at ? new Date(a.added_at).getTime() : 0;
-            const dateB = b.added_at ? new Date(b.added_at).getTime() : 0;
-            return dateB - dateA;
-        })
-        .slice(0, limit);
-}
-
-export function saveProducts(data: ProductsData): void {
-    const dir = path.dirname(DATA_FILE);
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
-}
-
-export function addProducts(newProducts: Product[]): ProductsData {
-    const data = getProducts();
-
-    for (const product of newProducts) {
-        const existingIndex = data.products.findIndex(p => p.asin === product.asin);
-        if (existingIndex >= 0) {
-            // Update existing
-            data.products[existingIndex] = { ...data.products[existingIndex], ...product };
-        } else {
-            // Add new with timestamp
-            data.products.push({
-                ...product,
-                added_at: product.added_at || new Date().toISOString(),
-            });
-        }
+export async function getProductsByCategory(category: string): Promise<Product[]> {
+    if (!category || category === 'all') {
+        const data = await getProducts();
+        return data.products;
     }
 
-    data.last_updated = new Date().toISOString();
-    saveProducts(data);
-    return data;
+    const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .ilike('category', category)
+        .order('rank', { ascending: true });
+
+    return error ? [] : (data as Product[]);
 }
 
-export function getCategories(): string[] {
-    const data = getProducts();
-    const cats = new Set(data.products.map(p => p.category));
+export async function getLatestProducts(limit: number = 10): Promise<Product[]> {
+    const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('added_at', { ascending: false })
+        .limit(limit);
+
+    return error ? [] : (data as Product[]);
+}
+
+export async function addProducts(newProducts: Product[]): Promise<{ count: number }> {
+    // Upsert based on ASIN (insert or update if exists)
+    const productsWithTimestamp = newProducts.map(p => ({
+        ...p,
+        added_at: p.added_at || new Date().toISOString(),
+    }));
+
+    const { error, count } = await supabase
+        .from('products')
+        .upsert(productsWithTimestamp, { onConflict: 'asin' });
+
+    if (error) throw new Error(error.message);
+    return { count: count || newProducts.length };
+}
+
+export async function getCategories(): Promise<string[]> {
+    const { data } = await supabase
+        .from('products')
+        .select('category');
+
+    if (!data) return [];
+    const cats = new Set<string>(data.map((p: { category: string }) => p.category));
     return Array.from(cats);
 }
 

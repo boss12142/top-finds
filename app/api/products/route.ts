@@ -1,46 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getProducts, addProducts } from '@/lib/products';
+import { supabase } from '@/lib/supabase';
+import { Product } from '@/lib/types';
 
 // GET: Fetch all products
 export async function GET() {
-    const data = getProducts();
-    return NextResponse.json(data);
+    const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('rank', { ascending: true });
+
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ products: data, last_updated: new Date().toISOString() });
 }
 
-// POST: Add or update products (used by April/Cinema Agent)
+// POST: April pushes new/updated products
 export async function POST(request: NextRequest) {
     try {
-        // Simple auth via header
         const authKey = request.headers.get('x-api-key');
         const expectedKey = process.env.API_KEY || 'topfinds-update-2026';
 
         if (authKey !== expectedKey) {
-            return NextResponse.json(
-                { error: 'Unauthorized. Include x-api-key header.' },
-                { status: 401 }
-            );
+            return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 });
         }
 
         const body = await request.json();
 
         if (!body.products || !Array.isArray(body.products)) {
-            return NextResponse.json(
-                { error: 'Body must include "products" array.' },
-                { status: 400 }
-            );
+            return NextResponse.json({ error: 'Body must include "products" array.' }, { status: 400 });
         }
 
-        const updated = addProducts(body.products);
+        const products = body.products.map((p: Product) => ({
+            ...p,
+            added_at: p.added_at || new Date().toISOString(),
+        }));
+
+        const { error, count } = await supabase
+            .from('products')
+            .upsert(products, { onConflict: 'asin' });
+
+        if (error) throw new Error(error.message);
 
         return NextResponse.json({
             success: true,
-            total_products: updated.products.length,
-            last_updated: updated.last_updated,
+            updated: count || products.length,
+            timestamp: new Date().toISOString(),
         });
     } catch (error) {
-        return NextResponse.json(
-            { error: `Server error: ${error}` },
-            { status: 500 }
-        );
+        return NextResponse.json({ error: `Server error: ${error}` }, { status: 500 });
     }
 }

@@ -7,17 +7,17 @@ export const metadata: Metadata = {
     description: "Our latest curated product picks from Amazon. Click to shop the deals featured in our latest videos.",
 };
 
-export default function LinksPage() {
-    const products = getLatestProducts(12);
+export const revalidate = 30;
+
+export default async function LinksPage() {
+    const products = await getLatestProducts(12);
 
     return (
         <div className="linkinbio">
-            {/* Profile */}
             <div className="linkinbio-avatar">TF</div>
             <h1>Top Finds</h1>
             <p>🔥 Shop our latest picks from our videos</p>
 
-            {/* Product Links */}
             {products.length > 0 ? (
                 products.map((product: Product) => (
                     <a
@@ -28,12 +28,7 @@ export default function LinksPage() {
                         className="linkinbio-item"
                     >
                         {product.image ? (
-                            <img
-                                src={product.image}
-                                alt={product.title}
-                                className="linkinbio-item-image"
-                                loading="lazy"
-                            />
+                            <img src={product.image} alt={product.title} className="linkinbio-item-image" loading="lazy" />
                         ) : (
                             <div className="linkinbio-item-image" style={{ display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24 }}>
                                 📦
@@ -54,7 +49,6 @@ export default function LinksPage() {
                 </div>
             )}
 
-            {/* Footer note */}
             <p style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 24, textAlign: "center", lineHeight: 1.4 }}>
                 As an Amazon Associate, I earn from qualifying purchases. (paid links)
             </p>

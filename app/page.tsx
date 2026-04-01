@@ -17,11 +17,12 @@ const CATEGORY_EMOJI: Record<string, string> = {
   all: "🔥",
 };
 
-export default function HomePage() {
-  const data = getProducts();
-  const categories = getCategories();
-  const products = data.products;
+export const revalidate = 60; // ISR: revalidate every 60 seconds
 
+export default async function HomePage() {
+  const data = await getProducts();
+  const categories = await getCategories();
+  const products = data.products;
   const featured = products.slice(0, 6);
 
   return (
