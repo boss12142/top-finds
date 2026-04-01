@@ -59,6 +59,7 @@ export default function ProductCard({ product, index }: { product: Product; inde
                         <span className="currency">$</span>
                         {priceWhole}
                         <span style={{ fontSize: 14, verticalAlign: "super" }}>.{priceCents}</span>
+                        <span style={{ fontSize: 10, color: "var(--text-muted)", marginLeft: 4 }}>approx.</span>
                     </div>
                 )}
 
@@ -68,7 +69,7 @@ export default function ProductCard({ product, index }: { product: Product; inde
                     rel="noopener noreferrer nofollow sponsored"
                     className="product-card-cta"
                 >
-                    View on Amazon →
+                    {priceWhole !== null ? "View on Amazon →" : "Check Price on Amazon →"}
                 </a>
             </div>
         </div>
