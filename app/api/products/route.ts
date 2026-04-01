@@ -34,6 +34,9 @@ export async function POST(request: NextRequest) {
             added_at: p.added_at || new Date().toISOString(),
         }));
 
+        // Clear top finds page before adding fresh ones
+        await supabase.from('products').delete().neq('asin', '0');
+
         const { error, count } = await supabase
             .from('products')
             .upsert(products, { onConflict: 'asin' });
